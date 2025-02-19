@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 /// A utility class for catching and reporting Flutter runtime errors to an external API.
 class FlutterTelexErrorMonitor {
   /// The server endpoint URL to which error logs are sent.
-  static const String _errorLogUrl = "$backendURL/error-log";
+  static const String _errorLogUrl = "$backendURL/api/v1/submit-error";
 
   /// Add Telex channel Webhook URL configuration
   static String? _telexChannelWebhookUrl;
