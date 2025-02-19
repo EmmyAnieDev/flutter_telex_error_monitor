@@ -4,7 +4,7 @@
 
 ```dart
 import 'package:flutter/material.dart';
-import 'package:flutter_error_checker/flutter_telex_error_monitor.dart';
+import 'package:flutter_telex_error_monitor/flutter_telex_error_monitor.dart';
 
 void main() {
   // Initialize error monitoring
@@ -140,7 +140,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_error_checker/flutter_telex_error_monitor.dart';
+import 'package:flutter_telex_error_monitor/flutter_telex_error_monitor.dart';
 
 void main() {
   FlutterTelexErrorMonitor.init(

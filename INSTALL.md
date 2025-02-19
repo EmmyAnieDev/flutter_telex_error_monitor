@@ -16,7 +16,7 @@ Add the package to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  flutter_error_checker: ^0.0.2
+  flutter_telex_error_monitor: ^0.0.2
 ```
 
 Then run:
@@ -44,7 +44,7 @@ No additional configuration needed for network permissions.
 In your main.dart:
 
 ```dart
-import 'package:flutter_error_checker/flutter_telex_error_monitor.dart';
+import 'package:flutter_telex_error_monitor/flutter_telex_error_monitor.dart';
 
 void main() {
   // Initialize the error monitor before runApp
