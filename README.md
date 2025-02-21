@@ -24,7 +24,7 @@ A Flutter package that automatically captures application errors and exceptions 
 2. Add the package to your `pubspec.yaml`:
 ```yaml
 dependencies:
-  flutter_telex_error_monitor: ^0.0.2
+  flutter_telex_error_monitor: ^0.0.4
 ```
 
 3. Run:

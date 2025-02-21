@@ -1,6 +1,6 @@
 name: flutter_telex_error_monitor
 description: A Flutter package that automatically captures application errors and exceptions at runtime and forwards them to Telex channels for real-time monitoring and debugging.
-version: 0.0.2
+version: 0.0.4
 repository: https://github.com/EmmyAnieDev/flutter_telex_error_monitor
 issue_tracker: https://github.com/EmmyAnieDev/flutter_telex_error_monitor/issues
 homepage: https://github.com/EmmyAnieDev/flutter_telex_error_monitor
