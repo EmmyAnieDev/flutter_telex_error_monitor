@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.0.5
+
+### Added
+- Improved error handling for different platforms (Web, Android, iOS).
+- Added detection for HTTP, network, and layout overflow errors.
+- Standardized error messages across all platforms.
+
+### Fixed
+- Resolved issue where layout overflow errors didn't display a meaningful location.
+- Fixed inconsistent error reporting on Android vs Web.
+
 ## 0.0.2
 
 ### New Features

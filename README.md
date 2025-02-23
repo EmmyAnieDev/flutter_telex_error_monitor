@@ -24,7 +24,7 @@ A Flutter package that automatically captures application errors and exceptions 
 2. Add the package to your `pubspec.yaml`:
 ```yaml
 dependencies:
-  flutter_telex_error_monitor: ^0.0.4
+  flutter_telex_error_monitor: ^0.0.5
 ```
 
 3. Run:
@@ -43,6 +43,17 @@ void main() {
   );
   runApp(MyApp());
 }
+```
+
+### Step 4: Android Configuration
+- For Android apps, update your AndroidManifest.xml file located at android/app/src/main/AndroidManifest.xml.
+  Add the following inside the <application> tag:
+
+```
+<application
+    android:enableOnBackInvokedCallback="true"
+    ... >
+</application>
 ```
 
 ## Usage
