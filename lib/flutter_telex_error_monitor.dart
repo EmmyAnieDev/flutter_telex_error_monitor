@@ -112,7 +112,20 @@ class FlutterTelexErrorMonitor {
     // Split the stack trace into individual lines.
     final lines = stackTrace.split('\n');
 
-    // First try to find packages/ pattern
+    // Check for the first occurrence of the error in `package:test_app`
+    for (var line in lines) {
+      if (line.contains('package:test_app') && line.contains('.dart:')) {
+        // Extract the clean location (remove function names)
+        final match = RegExp(r'\((.*\.dart:\d+:\d+)\)').firstMatch(line);
+        if (match != null) {
+          return match
+              .group(1)!; // Extracts only "test_app/home_page.dart:XX:YY"
+        }
+        return line.trim(); // Fallback
+      }
+    }
+
+    // If no direct package location is found, look for `packages/`
     for (var line in lines) {
       if (line.contains('packages/') &&
           !line.contains('packages/flutter/') &&
@@ -122,49 +135,89 @@ class FlutterTelexErrorMonitor {
       }
     }
 
-    // If packages/ pattern not found, try file:/// pattern
+    // If still no match, try the `file:///` format
     for (var line in lines) {
       if (line.contains('file:///') && line.contains('lib/')) {
         return line.trim();
       }
     }
 
-    // Default fallback
     return 'Location not found';
   }
 
   /// Sends the error details to the configured server endpoint.
   static Future<void> sendError(String error, String stackTrace) async {
     try {
-      // Make an HTTP POST request with the error details.
+      // Standardize the error message format
+      String formattedError = formatErrorMessage(error);
+
+      // Check if it's an Overflow Error
+      bool isOverflowError = error.contains('overflowed by');
+
+      // Check if it's an HTTP/Network error
+      bool isHttpError = error.contains('Failed host lookup') ||
+          error.contains('SocketException') ||
+          error.contains('HTTP request failed') ||
+          error.contains('ClientException');
+
+      // Set location based on error type
+      String formattedLocation;
+      if (isOverflowError) {
+        formattedLocation =
+            'Layout Overflow - Check Row/Column/Container widgets for unbounded width/height for the initialized screen';
+      } else if (isHttpError) {
+        formattedLocation =
+            'Network Error - Check API URL, internet connection, or server response';
+      } else {
+        formattedLocation = findErrorLocation(stackTrace);
+      }
+
+      // Prepare the payload for Telex
       final response = await _client.post(
         Uri.parse(_errorLogUrl),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'error': error,
+          'error': formattedError,
           'app_name': _appName,
           'telex_channel_webhook_Url': _telexChannelWebhookUrl,
-          'location': stackTrace,
+          'location': formattedLocation,
         }),
       );
 
-      // Check response status
+      // Log response status
       if (response.statusCode == 200) {
         if (kDebugMode) {
-          debugPrint("Error sent to your Telex's channel successfully.");
+          debugPrint("✅ Error sent to Telex successfully.");
         }
       } else {
         if (kDebugMode) {
           debugPrint(
-              "Failed to send error: ${response.statusCode} - ${response.body}");
+              "❌ Failed to send error: ${response.statusCode} - ${response.body}");
         }
       }
     } catch (e) {
-      // Log exceptions during HTTP request
       if (kDebugMode) {
-        debugPrint("Failed to send error: $e");
+        debugPrint("❌ Failed to send error: $e");
       }
     }
+  }
+
+  /// Formats the error message to ensure consistency across platforms.
+  static String formatErrorMessage(String error) {
+    // Remove unnecessary prefixes like "Exception: "
+    error = error.replaceAll(RegExp(r'Exception: '), '').trim();
+
+    // Remove unwanted quotes from errors like 'John'
+    if (error.startsWith("'") && error.endsWith("'")) {
+      error = error.substring(1, error.length - 1);
+    }
+
+    // Handle JSON errors by keeping only the relevant message
+    if (error.contains('JSON')) {
+      error = error.split(' at position')[0].trim();
+    }
+
+    return error;
   }
 
   /// For testing: reset the client to default
